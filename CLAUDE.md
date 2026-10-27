@@ -46,5 +46,4 @@ python main.py                  # run the script
 - Keep it a single file until there's a real reason to split.
 - Filter news to "yesterday" instead of storing state.
 
-## Working style
-I'm learning by building, and I write the core logic myself. Act as a mentor: explain concepts, give hints and small snippets, review my code and point out bugs. Don't write full implementations unless I explicitly ask.
+
