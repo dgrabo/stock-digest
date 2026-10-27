@@ -15,6 +15,8 @@ def fetch_price(ticker):
         raise ValueError(f"not enough price data ({len(closes)} closes)")
     last_close, prev_close = float(closes.iloc[-1]), float(closes.iloc[-2])
     return {
+        # Trading day of the last close (exchange-local date), e.g. Friday on a weekend run.
+        "close_date": closes.index[-1].date(),
         "last_close": round(last_close, 2),
         "prev_close": round(prev_close, 2),
         "change_pct": round((last_close - prev_close) / prev_close * 100, 2),

@@ -1,6 +1,6 @@
 """Company news from Finnhub."""
 
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 
 import requests
 
@@ -10,14 +10,16 @@ FINNHUB_URL = "https://finnhub.io/api/v1/company-news"
 
 
 def news_window(now=None):
-    """Return (start, end) datetimes in Zagreb time covering the previous weekday(s).
+    """Return (start, end) datetimes in Zagreb time covering the previous calendar day.
 
-    Monday -> Fri 00:00 to Mon 00:00 (includes the weekend); other days -> yesterday.
+    start is yesterday 00:00, end is today 00:00 (exclusive). The digest runs daily,
+    so each day's news appears exactly once, weekends included.
     """
     now = now or datetime.now(config.TZ)
-    end = now.replace(hour=0, minute=0, second=0, microsecond=0)
-    days_back = 3 if end.weekday() == 0 else 1
-    start = end - timedelta(days=days_back)
+    today = now.astimezone(config.TZ).date()
+    # Build from dates (not by subtracting 24h) so DST-change days stay midnight-to-midnight.
+    start = datetime.combine(today - timedelta(days=1), time(), config.TZ)
+    end = datetime.combine(today, time(), config.TZ)
     return start, end
 
 

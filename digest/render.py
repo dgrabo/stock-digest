@@ -22,6 +22,11 @@ def _fmt_date(d):
     return f"{d:%a} {d.day} {d:%b %Y}"
 
 
+def _fmt_day(d):
+    # "Fri 24 Oct"
+    return f"{d:%a} {d.day} {d:%b}"
+
+
 def _fmt_window(start, end):
     return f"{start:%a %d.%m. %H:%M} – {end:%a %d.%m. %H:%M} ({config.TIMEZONE})"
 
@@ -47,6 +52,7 @@ def _context(report, now=None):
         tickers.append({
             "symbol": symbol,
             "price": price,
+            "close_label": f"Close {_fmt_day(price['close_date'])}" if price else None,
             "direction": direction,
             "color": COLORS.get(direction, COLORS["flat"]),
             "error": data["error"],
@@ -79,7 +85,7 @@ def render_text(report, now=None):
     for t in ctx["tickers"]:
         if t["price"]:
             p = t["price"]
-            lines.append(f"{t['symbol']}  {p['last_close']:.2f}  ({p['change_pct']:+.2f}%)")
+            lines.append(f"{t['symbol']}  {p['last_close']:.2f}  ({p['change_pct']:+.2f}%)  {t['close_label']}")
         else:
             lines.append(t["symbol"])
         if t["error"]:
